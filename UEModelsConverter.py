@@ -92,9 +92,9 @@ def clear_scene():
     # Deselect all objects
     bpy.ops.object.select_all(action='DESELECT')
 
-    # Delete all selected objects
-    bpy.ops.object.select_all(action='SELECT')
-    bpy.ops.object.delete()
+    # Iterate over all objects and unlink them
+    for obj in bpy.context.scene.objects:
+        bpy.context.collection.objects.unlink(obj)
                 
 # Call the function to move .png files
 move_png_files(input_directory, output_directory)
@@ -154,8 +154,8 @@ for root, dirs, files in os.walk(input_mapping_directory):
                     # Check if the file exists
                     if not os.path.exists(accessory_psk_file_path):
                         log_message = f"[NOT FOUND ACCESSORY] File not found: {accessory_psk_file_path}."
-                        print(log_message)
                         if not os.path.exists(accessory_logs_check_file_path):
+                            print(log_message)
                             log_to_file(log_message)
                         continue
 
@@ -214,8 +214,8 @@ for root, dirs, files in os.walk(input_mapping_directory):
                 # If file doesnt exist, skip
                 if not os.path.exists(model_psk_file_path):
                     log_message = f"[NOT FOUND MESH] File not found: {model_psk_file_path}"
-                    print(log_message)
                     if not os.path.exists(model_logs_check_file_path):
+                        print(log_message)
                         log_to_file(log_message)
                     continue
                     
