@@ -5,16 +5,16 @@ import shutil
 from io_import_scene_unreal_psa_psk_280 import *
 
 # Specify the root directory
-root_directory = r"C:\Users\mateu\Downloads\CodeProjects\AssetsParser\UEModelsConverter"
+root_directory = r"C:\Users\mateu\Downloads\CodeProjects\UParser\UEModelsConverter"
 
 # Specify the input directory
-input_directory = r"C:\Users\mateu\Downloads\CodeProjects\AssetsParser\UEModelsConverter\Input"
+input_directory = r"C:\Users\mateu\Downloads\CodeProjects\UParser\UEModelsConverter\Input"
 
 # Specify the input directory for JSON files
-input_mapping_directory = r"C:\Users\mateu\Downloads\CodeProjects\AssetsParser\Output\ModelsData"
+input_mapping_directory = r"C:\Users\mateu\Downloads\CodeProjects\UParser\Output\ModelsData"
 
 # Specify the output directory
-output_directory = r"C:\Users\mateu\Downloads\CodeProjects\AssetsParser\UEModelsConverter\Output"
+output_directory = r"C:\Users\mateu\Downloads\CodeProjects\UParser\UEModelsConverter\Output"
 
 # Specify the log directory
 log_directory = os.path.join(root_directory, "Logs")
