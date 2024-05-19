@@ -36,13 +36,13 @@ def log_to_file(message):
 
 def log_textures_to_file(texture_paths):
     # Check if texture paths exist in the directory
-    for texture_path in texture_paths:
+    for key, texture_path in texture_paths.items():
         # Remove the initial "/assets/" part from the texture path
         texture_relative_path = texture_path.replace("/assets/", "")
         check_texture_path = os.path.join(log_check_file_path, texture_relative_path)
         if not os.path.exists(check_texture_path):
             # Log missing texture paths to a file
-            message = f"[NOT FOUND TEXTURE] Texture not found: {texture_path}"
+            message = f"[WARN] '{key}' Texture not found: {texture_path}"
             print(message)
             log_to_file(message)
 
@@ -99,7 +99,7 @@ def clear_scene():
 # Call the function to move .png files
 move_png_files(input_directory, output_directory)
 
-texture_paths = []
+texture_paths = {}
 # Iterate through all .json files in the input mapping directory
 for root, dirs, files in os.walk(input_mapping_directory):
     for file in files:
@@ -123,7 +123,8 @@ for root, dirs, files in os.walk(input_mapping_directory):
                 for material in materials.values():
                     if isinstance(material, dict):
                         textures = material.get("Textures", {})
-                        texture_paths.extend(textures.values())
+                        for texture_key, texture_value in textures.items():
+                            texture_paths[key] = texture_value
                 
                 # Iterate through Accessories and grab model path
                 accessories = value.get("Accessories", [])
@@ -135,7 +136,8 @@ for root, dirs, files in os.walk(input_mapping_directory):
                     for accessory_material in accessory_materials.values():
                         if isinstance(accessory_material, dict):
                             accessory_textures = accessory_material.get("Textures", {})
-                            texture_paths.extend(accessory_textures.values())
+                            for accessory_texture_key, accessory_texture_value in accessory_textures.items():
+                                texture_paths[key] = accessory_texture_value
             
                     accessory_model_path = accessory.get("ModelPath", "")
                     accessory_glb_file_path = os.path.join(root_directory, "Output", accessory_model_path.replace('/assets/', ''))
@@ -153,7 +155,7 @@ for root, dirs, files in os.walk(input_mapping_directory):
 
                     # Check if the file exists
                     if not os.path.exists(accessory_psk_file_path):
-                        log_message = f"[NOT FOUND ACCESSORY] File not found: {accessory_psk_file_path}."
+                        log_message = f"[WARN] Accessory not found: {accessory_psk_file_path}."
                         if not os.path.exists(accessory_logs_check_file_path):
                             print(log_message)
                             log_to_file(log_message)
@@ -213,7 +215,7 @@ for root, dirs, files in os.walk(input_mapping_directory):
                 
                 # If file doesnt exist, skip
                 if not os.path.exists(model_psk_file_path):
-                    log_message = f"[NOT FOUND MESH] File not found: {model_psk_file_path}"
+                    log_message = f"[WARN] Mesh not found: {model_psk_file_path}"
                     if not os.path.exists(model_logs_check_file_path):
                         print(log_message)
                         log_to_file(log_message)
