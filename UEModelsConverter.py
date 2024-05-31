@@ -63,13 +63,17 @@ def import_psk(file_path):
 
 # Export as .gLTF 2.0 (.glb) file
 def export(psk_file_path):
-    # Specify the output file path with .glb extension
-    #relative_path = os.path.relpath(psk_file_path, input_directory)
-    output_file_path = os.path.join(output_directory, psk_file_path.replace(".psk", ".glb").replace("Input", "Output"))
-    # Create the output directory if it doesn't exist
-    os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
-    bpy.ops.export_scene.gltf(filepath=output_file_path, export_format='GLB')
-    print(f"File saved as {output_file_path}")
+    if 'DSkleton' not in psk_file_path:
+        # Specify the output file path with .glb extension
+        output_file_path = os.path.join(output_directory, psk_file_path.replace(".psk", ".glb").replace("Input", "Output"))
+        # Create the output directory if it doesn't exist
+        os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+        bpy.ops.export_scene.gltf(filepath=output_file_path, export_format='GLB')
+        print(f"File saved as {output_file_path}")
+    else:
+        log_message = "[SKIP] PSK file path contains 'DSkleton'. Skipping export."
+        log_to_file(log_message)
+        print(log_message)
     
 # Function to move all .png files from Input to Output
 def move_png_files(input_directory, output_directory):
