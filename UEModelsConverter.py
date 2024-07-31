@@ -51,7 +51,6 @@ def export_as_gltf(output_file_path):
     try:
         bpy.ops.export_scene.gltf(filepath=output_file_path, export_format='GLB')
         log_to_file(log_file_path, f"[INFO] File saved as {output_file_path}")
-        print(f"File saved as {output_file_path}")
     except Exception as e:
         log_to_file(log_file_path, f"[ERROR] Failed to export GLTF file {output_file_path}: {e}")
 
@@ -145,7 +144,7 @@ def export_model(model_psk_file_path, output_directory):
         return
     
     if os.path.exists(output_file_path):
-        print(f"[INFO] File {output_file_path} already exists in output. Skipping export.")
+        log_to_file(log_file_path, f"[INFO] File {output_file_path} already exists in output. Skipping export.")
         return
     
     export_as_gltf(output_file_path)
@@ -161,7 +160,9 @@ if __name__ == "__main__":
     
     log_directory = os.path.join(root_directory, "Output", "Logs")
     log_file_path = setup_logging(log_directory)
+
+    log_to_file(log_file_path, f"[INFO] UEModelsConverter script started.")
     
     process_json_files(root_directory, input_mapping_directory, output_directory, log_file_path)
     
-    print("Finished converting models.")
+    log_to_file(log_file_path, f"[SUCCESS] Finished converting models.")
