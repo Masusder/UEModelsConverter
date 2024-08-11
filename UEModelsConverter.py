@@ -55,7 +55,7 @@ def export_as_gltf(output_file_path):
         log_to_file(log_file_path, f"[ERROR] Failed to export GLTF file {output_file_path}: {e}")
 
 
-def process_json_files(root_directory, input_mapping_directory, output_directory, log_file_path):
+def process_json_files(root_directory, input_mapping_directory, output_directory, log_file_path, input_directory):
     """Process JSON files to import PSK files and export them as GLTF."""
     for root, dirs, files in os.walk(input_mapping_directory):
         for file in files:
@@ -65,24 +65,24 @@ def process_json_files(root_directory, input_mapping_directory, output_directory
                 try:
                     with open(json_file_path, 'r') as json_file:
                         data = json.load(json_file)
-                    process_json_data(data, root_directory, output_directory, log_file_path)
+                    process_json_data(data, root_directory, output_directory, log_file_path, input_directory)
                 except Exception as e:
                     log_to_file(log_file_path, f"[ERROR] Failed to process JSON file {json_file_path}: {e}")
 
 
-def process_json_data(data, root_directory, output_directory, log_file_path):
+def process_json_data(data, root_directory, output_directory, log_file_path, input_directory):
     """Process data from a JSON file."""
     for key, value in data.items():
-        process_model_data(value, root_directory, output_directory, log_file_path)
-        process_accessories_data(value, root_directory, output_directory, log_file_path)
+        process_model_data(value, root_directory, output_directory, log_file_path, input_directory)
+        process_accessories_data(value, root_directory, output_directory, log_file_path, input_directory)
 
 
-def process_model_data(model_data, root_directory, output_directory, log_file_path):
+def process_model_data(model_data, root_directory, output_directory, log_file_path, input_directory):
     """Process model data from a JSON entry."""
     model_path = model_data.get("ModelPath", "")
     model_path_psk = os.path.splitext(model_path)[0] + ".psk"
     model_path_psk = model_path_psk.replace('/assets/', '')
-    model_psk_file_path = os.path.join(root_directory, "Input", model_path_psk)
+    model_psk_file_path = os.path.join(input_directory, model_path_psk)
     
     if not os.path.exists(model_psk_file_path):
         # log_to_file(log_file_path, f"[WARN] Mesh not found: {model_psk_file_path}")
@@ -94,14 +94,14 @@ def process_model_data(model_data, root_directory, output_directory, log_file_pa
     export_model(model_path_psk, output_directory)
 
 
-def process_accessories_data(model_data, root_directory, output_directory, log_file_path):
+def process_accessories_data(model_data, root_directory, output_directory, log_file_path, input_directory):
     """Process accessories data from a JSON entry."""
     accessories = model_data.get("Accessories", [])
     for accessory in accessories:
         accessory_model_path = accessory.get("ModelPath", "")
         accessory_model_path_psk = os.path.splitext(accessory_model_path)[0] + ".psk"
         accessory_model_path_psk = accessory_model_path_psk.replace('/assets/', '')
-        accessory_psk_file_path = os.path.join(root_directory, "Input", accessory_model_path_psk)
+        accessory_psk_file_path = os.path.join(input_directory, accessory_model_path_psk)
         
         if not os.path.exists(accessory_psk_file_path):
             # log_to_file(log_file_path, f"[WARN] Accessory not found: {accessory_psk_file_path}")
@@ -163,6 +163,6 @@ if __name__ == "__main__":
 
     log_to_file(log_file_path, f"[INFO] UEModelsConverter script started.")
     
-    process_json_files(root_directory, input_mapping_directory, output_directory, log_file_path)
+    process_json_files(root_directory, input_mapping_directory, output_directory, log_file_path, input_directory)
     
     log_to_file(log_file_path, f"[SUCCESS] Finished converting models.")
